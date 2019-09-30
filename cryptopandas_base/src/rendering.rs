@@ -8,8 +8,8 @@ use crate::traits::PandaAttributes;
 // Should end with a slash
 const DEST_ROOT_PATH : &'static str = "./static/pandas/";
 
-const BLENDER_EXEC_LOCATION : &'static str = "/Applications/Blender.app/Contents/MacOS/Blender";
-const SCENE_LOCATION : &'static str = "./blender/blender/panda.blend";
+const BLENDER_EXEC_LOCATION : &'static str = "/blender_exec/blender-2.80-linux-glibc217-x86_64/blender-softwaregl";
+const SCENE_LOCATION : &'static str = "./blender/blender/panda_cycles.blend";
 
 fn touch(path: &Path) -> io::Result<()> {
     match OpenOptions::new().create(true).write(true).open(path) {
