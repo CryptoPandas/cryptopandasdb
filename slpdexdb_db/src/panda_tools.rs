@@ -118,7 +118,8 @@ pub fn get_panda_by_token_id(token_id: &[u8], conn:&PgConnection) -> Result<DbPa
 }
 
 pub fn get_full_panda_by_token_id(token_id: &[u8], conn:&PgConnection) -> Result<DbPandaFull, DieselError> {
-    use self::schema::{panda::dsl as panda_dsl, tx::dsl as tx_dsl, tx_output::dsl as output_dsl};
+    use self::schema::{panda::dsl as panda_dsl, tx::dsl as tx_dsl, tx_output::dsl as output_dsl,
+                       token::dsl as token_dsl, slp_tx::dsl as slp_tx_dsl};
 
     output_dsl::tx_output
         .inner_join(tx_dsl::tx)
@@ -126,7 +127,9 @@ pub fn get_full_panda_by_token_id(token_id: &[u8], conn:&PgConnection) -> Result
             panda_dsl::owner_tx.eq(output_dsl::tx).and(
                 panda_dsl::owner_tx_idx.eq(output_dsl::idx))
         ))
-        .filter(tx_dsl::hash.eq(token_id))
+        .inner_join(slp_tx_dsl::slp_tx.on(slp_tx_dsl::tx.eq(tx_dsl::id)))
+        .inner_join(token_dsl::token.on(token_dsl::id.eq(slp_tx_dsl::token)))
+        .filter(token_dsl::hash.eq(token_id))
         .select((
             tx_dsl::hash,
             output_dsl::address,
