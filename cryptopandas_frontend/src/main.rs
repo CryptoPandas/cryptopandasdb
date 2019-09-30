@@ -104,7 +104,7 @@ impl From<DbPandaFull> for PandaFrontEnd {
     }
 }
 
-/// Get Panda by Address
+/// Get Breeders
 fn breeders(
     hb: web::Data<Handlebars>,
     pool: web::Data<Pool>,
@@ -146,6 +146,25 @@ fn breeders(
             Err(_) => Ok(HttpResponse::NotFound().finish()),
         },
     )
+}
+
+#[derive(Serialize, Deserialize)]
+struct BreedQuery {
+    father_id: String,
+    mother_id: String
+}
+
+/// Breed
+fn breed(
+    hb: web::Data<Handlebars>,
+    pool: web::Data<Pool>,
+    parents: web::Query<BreedQuery>,
+) -> HttpResponse {
+    // Render using handle bars
+    let data = serde_json::to_value(parents.into_inner()).unwrap();
+
+    let body = hb.render("breed", &data).unwrap();
+    HttpResponse::Ok().body(body)
 }
 
 /// Get Panda by Address
@@ -196,7 +215,7 @@ fn pandas_by_address(
 #[derive(Deserialize)]
 struct SelectionQuery {
     father_id: String,
-    address: String
+    address: String,
 }
 
 /// Get Panda by Address
@@ -300,8 +319,8 @@ fn main() -> io::Result<()> {
 // 		  wild_element: WildElementTrait::ThirdEye,
 // 		  mouth: MouthTrait::Walrus,
 // 	};
-// 
-// 
+//
+//
 // 	let r = panda_base::rendering::render_panda(&panda_attribute);
 // 	if (r.is_ok()) {
 // 		print!("ok!");
