@@ -6,8 +6,8 @@ use std::process::Command;
 use crate::traits::PandaAttributes;
 
 // Should end with a slash
-const DEST_ROOT_PATH : &'static str = "./static/pandas/";
-const DEST_ROOT_URL : &'static str = "/pandas/";
+const DEST_ROOT_PATH : &'static str = "./static/pandas_list/";
+const DEST_ROOT_URL : &'static str = "/pandas_list/";
 
 const BLENDER_EXEC_LOCATION : &'static str = "/blender_exec/blender-2.80-linux-glibc217-x86_64/blender-softwaregl";
 const SCENE_LOCATION : &'static str = "./blender/blender/panda_cycles.blend";
