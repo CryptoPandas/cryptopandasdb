@@ -1,9 +1,11 @@
-{{#*inline "page"}}
-{{if image_url}}
-<img src="{{image_url}}" />
-{{else}}
-The image is being computed.
-{{/if}}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Panda</title>
+</head>
+
+<body>
 <p><b>Physique:</b> {{physique}}</p>
 <p><b>Pattern:</b> {{pattern}}</p>
 <p><b>Eye Color:</b> {{eye_color}}</p>
@@ -12,10 +14,5 @@ The image is being computed.
 <p><b>Accent Color:</b> {{accent_color}}</p>
 <p><b>Wild Element:</b> {{wild_element}}</p>
 <p><b>Mouth:</b> {{mouth}}</p>
-{{/inline}}
-
-{{#*inline "title"}}
-Panda
-{{/inline}}
-
-{{~> main~}}
+</body>
+</html>

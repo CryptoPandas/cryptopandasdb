@@ -106,7 +106,7 @@ impl From<DbPandaFull> for PandaFrontEnd {
     }
 }
 
-/// Get Panda by Address
+/// Get Breeders
 fn breeders(
     hb: web::Data<Handlebars>,
     pool: web::Data<Pool>,
@@ -148,6 +148,25 @@ fn breeders(
             Err(_) => Ok(HttpResponse::NotFound().finish()),
         },
     )
+}
+
+#[derive(Serialize, Deserialize)]
+struct BreedQuery {
+    father_id: String,
+    mother_id: String
+}
+
+/// Breed
+fn breed(
+    hb: web::Data<Handlebars>,
+    pool: web::Data<Pool>,
+    parents: web::Query<BreedQuery>,
+) -> HttpResponse {
+    // Render using handle bars
+    let data = serde_json::to_value(parents.into_inner()).unwrap();
+
+    let body = hb.render("breed", &data).unwrap();
+    HttpResponse::Ok().body(body)
 }
 
 /// Get Panda by Address
@@ -198,7 +217,7 @@ fn pandas_by_address(
 #[derive(Deserialize)]
 struct SelectionQuery {
     father_id: String,
-    address: String
+    address: String,
 }
 
 /// Get Panda by Address
@@ -344,20 +363,15 @@ fn main() -> io::Result<()> {
         App::new()
             .register_data(handlebars_ref.clone())
             .data(pool.clone())
+            .service(web::resource("/selection").route(web::get().to_async(pandas_by_address)))
+            .service(web::resource("/breeders").route(web::get().to_async(breeders)))
+            .service(web::resource("/selection").route(web::get().to_async(selection)))
+            .service(web::resource("/breed").route(web::get().to(breed)))
             .service(
                 web::resource("/panda/{token_id}").route(web::get().to_async(panda_by_token_id)),
             )
             .service(
                 web::resource("/pandas/{address}").route(web::get().to_async(pandas_by_address)),
-            )
-            .service(
-                web::resource("/selection").route(web::get().to_async(pandas_by_address)),
-            )
-            .service(
-                web::resource("/breeders").route(web::get().to_async(breeders)),
-            )
-            .service(
-                web::resource("/selection").route(web::get().to_async(selection)),
             )
 	    // If no service, try to find a static file and to serve it
 	    .service(index)
@@ -365,7 +379,6 @@ fn main() -> io::Result<()> {
             .service(halloffame)
             .service(mating)
 	    .default_service( Files::new("", "./static/"))
-
     })
     .bind("127.0.0.1:8080")?
     .run()
