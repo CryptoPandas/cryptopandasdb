@@ -15,7 +15,7 @@ use std::{convert::TryInto, io};
 
 use actix_web::{error::BlockingError, web, Error};
 use actix_web::{App, HttpResponse, HttpServer};
-use cashcontracts::{Address, AddressType};
+use cashcontracts::{Address, AddressType, tx_hex_to_hash, tx_hash_to_hex};
 use diesel::{
     prelude::*,
     r2d2::{self, ConnectionManager},
@@ -88,7 +88,7 @@ impl From<DbPandaFull> for PandaFrontEnd {
         let address = Address::from_bytes_prefix(
             "simpleledger",
             AddressType::P2PKH,
-            (&db_panda.hash[..]).try_into().unwrap(),
+            (&db_panda.address.unwrap()[..]).try_into().unwrap(),
         );
         PandaFrontEnd {
             token_id: hex::encode(db_panda.hash),
@@ -145,7 +145,10 @@ fn breeders(
         // TODO: Fine grained error matching
         |res: Result<String, BlockingError<GetByAddressError>>| match res {
             Ok(body) => Ok(HttpResponse::Ok().body(body)),
-            Err(_) => Ok(HttpResponse::NotFound().finish()),
+            Err(err) => {
+                eprintln!("{}", err);
+                Ok(HttpResponse::NotFound().finish())
+            },
         },
     )
 }
@@ -209,7 +212,10 @@ fn pandas_by_address(
         // TODO: Fine grained error matching
         |res: Result<String, BlockingError<GetByAddressError>>| match res {
             Ok(body) => Ok(HttpResponse::Ok().body(body)),
-            Err(_) => Ok(HttpResponse::NotFound().finish()),
+            Err(err) => {
+                eprintln!("{}", err);
+                Ok(HttpResponse::NotFound().finish())
+            },
         },
     )
 }
@@ -233,7 +239,7 @@ fn selection(
             .map_err(|err| SelectionError::Connection(err.to_string()))?;
 
         // Decode token id
-        let raw_token_id = hex::decode(&query.father_id).map_err(SelectionError::Hex)?;
+        let raw_token_id = tx_hex_to_hash(&query.father_id).unwrap();
 
         // Decode address
         let address =
@@ -264,7 +270,10 @@ fn selection(
         // TODO: Fine grained error matching
         |res: Result<String, BlockingError<SelectionError>>| match res {
             Ok(body) => Ok(HttpResponse::Ok().body(body)),
-            Err(_) => Ok(HttpResponse::NotFound().finish()),
+            Err(err) => {
+                eprintln!("{}", err);
+                Ok(HttpResponse::NotFound().finish())
+            },
         },
     )
 }
@@ -282,7 +291,9 @@ fn panda_by_token_id(
             .map_err(|err| GetByTokenError::Connection(err.to_string()))?;
 
         // Decode token id
-        let raw_token_id = hex::decode(&token_id.into_inner()).map_err(GetByTokenError::Hex)?;
+        let raw_token_id = tx_hex_to_hash(&token_id.into_inner()).unwrap();
+
+        println!("{}", tx_hash_to_hex(&raw_token_id));
 
         // Grab panda from DB
         let db_panda =
@@ -316,13 +327,17 @@ fn panda_by_token_id(
         // Render using handle bars
         Ok(hb_helpers::debug_hb(hb)
             .render("panda", &data)
-            .map_err(|err| GetByTokenError::Handlebars)?)
+            .unwrap())
+            //.map_err(|err| GetByTokenError::Handlebars)?)
     })
     .then(
         // TODO: Fine grained error matching
         |res: Result<String, BlockingError<GetByTokenError>>| match res {
             Ok(body) => Ok(HttpResponse::Ok().body(body)),
-            Err(_) => Ok(HttpResponse::NotFound().finish()),
+            Err(err) => {
+                eprintln!("{}", err);
+                Ok(HttpResponse::NotFound().finish())
+            },
         },
     )
 }
