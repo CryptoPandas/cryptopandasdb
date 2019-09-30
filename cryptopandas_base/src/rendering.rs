@@ -7,6 +7,7 @@ use crate::traits::PandaAttributes;
 
 // Should end with a slash
 const DEST_ROOT_PATH : &'static str = "./static/pandas/";
+const DEST_ROOT_URL : &'static str = "/pandas/";
 
 const BLENDER_EXEC_LOCATION : &'static str = "/blender_exec/blender-2.80-linux-glibc217-x86_64/blender-softwaregl";
 const SCENE_LOCATION : &'static str = "./blender/blender/panda_cycles.blend";
@@ -31,6 +32,12 @@ pub fn panda_attribute_to_render_key(panda_attribute: &PandaAttributes) -> Strin
 		  + &format!("{:x}", panda_attribute.mouth as i32);
 
 	return name;
+}
+
+pub fn panda_attribute_to_media_url(panda_attribute: &PandaAttributes) -> String {
+	let dest_folder = DEST_ROOT_URL.to_owned() + &panda_attribute_to_render_key(&panda_attribute) + "/";
+
+	return dest_folder;
 }
 
 pub fn render_panda_over(panda_attribute: &PandaAttributes) -> bool {

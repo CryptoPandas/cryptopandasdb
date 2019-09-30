@@ -42,7 +42,7 @@ fn index(hb: web::Data<Handlebars>) -> HttpResponse {
 }
 
 #[get("/pandascope/")]
-fn pandas(hb: web::Data<Handlebars>) -> HttpResponse {
+fn pandascope(hb: web::Data<Handlebars>) -> HttpResponse {
     let data = json!({
     });
     let body = hb_helpers::debug_hb(hb).render("pandascope", &data).unwrap();
@@ -80,6 +80,7 @@ struct PandaFrontEnd {
     pub highlight_color: HighlightColorTrait,
     pub accent_color: AccentColorTrait,
     pub wild_element: WildElementTrait,
+    pub mouth: MouthTrait,
 }
 
 impl From<DbPandaFull> for PandaFrontEnd {
@@ -100,6 +101,7 @@ impl From<DbPandaFull> for PandaFrontEnd {
             highlight_color: db_panda.highlight_color,
             accent_color: db_panda.accent_color,
             wild_element: db_panda.wild_element,
+            mouth: db_panda.mouth,
         }
     }
 }
@@ -271,7 +273,26 @@ fn panda_by_token_id(
         let frontend_panda = PandaFrontEnd::from(db_panda);
 
         // Convert to JSON
-        let data = serde_json::to_value(frontend_panda).map_err(GetByTokenError::Serde)?;
+        let mut data = serde_json::to_value(&frontend_panda).map_err(GetByTokenError::Serde)?;
+	// Check if the video is there
+	let mut image_url = "".to_string();
+	let panda = PandaAttributes {
+		physique : frontend_panda.physique,
+		 pattern : frontend_panda.pattern,
+		 eye_color : frontend_panda.eye_color,
+		 eye_shape : frontend_panda.eye_shape,
+		 base_color : frontend_panda.base_color,
+		 highlight_color : frontend_panda.highlight_color,
+		 accent_color : frontend_panda.accent_color,
+		 wild_element : frontend_panda.wild_element,
+		 mouth : frontend_panda.mouth
+	};
+
+	if panda_base::rendering::render_panda_over(&panda) {
+		image_url = format!("{}picture0000.png", panda_base::rendering::panda_attribute_to_media_url(&panda).to_string());
+	}
+	data["image_url"] = json!(image_url);
+	data["panda_visible_id"] = json!(panda_base::rendering::panda_attribute_to_media_url(&panda));
 
         // Render using handle bars
         Ok(hb_helpers::debug_hb(hb)
@@ -323,9 +344,6 @@ fn main() -> io::Result<()> {
         App::new()
             .register_data(handlebars_ref.clone())
             .data(pool.clone())
-            .service(index)
-            .service(halloffame)
-            .service(mating)
             .service(
                 web::resource("/panda/{token_id}").route(web::get().to_async(panda_by_token_id)),
             )
@@ -342,6 +360,10 @@ fn main() -> io::Result<()> {
                 web::resource("/selection").route(web::get().to_async(selection)),
             )
 	    // If no service, try to find a static file and to serve it
+	    .service(index)
+            .service(pandascope)
+            .service(halloffame)
+            .service(mating)
 	    .default_service( Files::new("", "./static/"))
 
     })
