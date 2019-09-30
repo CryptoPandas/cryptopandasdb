@@ -40,8 +40,19 @@ pub fn render_panda_over(panda_attribute: &PandaAttributes) -> bool {
 	return Path::new(&dest_folder).exists() && Path::new(&done_file).exists(); 
 }
 
+pub fn render_panda_is_ongoing(panda_attribute: &PandaAttributes) -> bool {
+
+	let dest_folder = DEST_ROOT_PATH.to_owned() + &panda_attribute_to_render_key(&panda_attribute) + "/";
+
+	return Path::new(&dest_folder).exists(); 
+}
+
 pub fn render_panda(panda_attribute: &PandaAttributes) -> Result<String, String> {
 	let dest_folder = DEST_ROOT_PATH.to_owned() + &panda_attribute_to_render_key(&panda_attribute) + "/";
+
+	if render_panda_is_ongoing(panda_attribute) {
+		return Ok(format!("Rendering is on its way: {}\n", dest_folder));
+	}
 
 	if render_panda_over(panda_attribute) {
 		// Nothing to do
