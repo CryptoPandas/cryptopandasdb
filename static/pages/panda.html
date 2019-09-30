@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title>Panda</title>
-</head>
-
-<body>
+{{#*inline "page"}}
 <p><b>Physique:</b> {{physique}}</p>
 <p><b>Pattern:</b> {{pattern}}</p>
 <p><b>Eye Color:</b> {{eye_color}}</p>
@@ -14,5 +7,10 @@
 <p><b>Accent Color:</b> {{accent_color}}</p>
 <p><b>Wild Element:</b> {{wild_element}}</p>
 <p><b>Mouth:</b> {{mouth}}</p>
-</body>
-</html>
+{{/inline}}
+
+{{#*inline "title"}}
+Panda
+{{/inline}}
+
+{{~> main~}}

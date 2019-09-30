@@ -1,0 +1,16 @@
+{{!-- To be included, not directly used --}}
+<h1>PandaScope</h1>
+<p>You can find below the most recent (and, surely, cuttest) CryptoPandas!</p>
+<table id="pandascope">
+<tbody>
+    {{#each panda_records}}
+        {{#if-module 0 3 @index}}
+            <tr>
+        {{/if-module}}
+            <td>Panda</td>
+	{{#if-module 2 3 @index}}
+            </tr>
+        {{/if-module}}
+    {{/each}}
+</tbody>
+</table>

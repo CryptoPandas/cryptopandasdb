@@ -1,0 +1,156 @@
+:root {
+    --text-color:#000;
+    --background-color:#FFF;
+    --dark-color:#6c0;
+    --light-color:#ad0;
+}
+
+
+body {
+	background-color: var(--background-color);
+	color:var(--text-color); 
+	width: 93%;
+}
+
+hr {
+	color:var(--dark-color);
+}
+
+h1 {
+	margin-top: 0;
+	color:var(--dark-color);
+}
+
+a {
+	text-decoration:none;
+	font-weight: bold;
+	color:var(--text-color);
+}
+
+a:hover {
+	text-decoration:none;
+	color:var(--dark-color);
+	font-weight: bold;
+}
+
+a:visited {
+	text-decoration:none;
+	font-weight: bold;
+	color:var(--text-color);
+}
+
+a:visited:hover {
+	text-decoration:none;
+	font-weight: bold;
+	color:var(--dark-color);
+}
+
+
+a:active {
+	text-decoration:none;
+	font-weight: bold;
+	color:var(--text-color);
+}
+
+
+header {
+	padding: 0.5rem 2.2rem;
+	width: 100%;
+}
+header div#menu
+{
+	flex-direction: row;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	font-weight: bold;
+}
+
+header div#menu a#logo {
+	flex-grow: 1;
+}
+
+header div#menu a {
+	display:flex;
+	align-items: center;
+}
+
+header div#menu a.logo {
+	display:flex;
+	outline : none;
+	flex-grow: 0;
+	border: 0;
+}
+
+header div#menu a span.logo-icon
+{
+	display: flex;
+	width: 64px;
+	height: 64px;
+	background-image: url('/favicon.png');
+	outline : none;
+}
+
+header div#menu div#cryptopandas
+{
+	display: flex;
+	margin: 1em;
+	flex-grow: 1;
+}
+
+header div#menu ul 
+{
+	flex-direction: row;
+	display: flex;
+}
+
+header div#menu li 
+{
+	display: flex;
+	margin: 1rem;
+}
+
+
+footer {
+	padding: 0.5rem 2.2rem;
+	width: 100%;
+	align-items: center;
+}
+
+footer div#footer {
+	flex-direction: row;
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+footer div#footer span {
+	flex-grow: 1;
+}
+
+footer div#footer span.last-one {
+	flex-grow: 0;
+}
+
+
+div#page-content {
+	width: 100%;
+	padding: 0rem 2.2rem;
+}
+
+.last-one {
+	flex-grow: 0;
+}
+
+h1 {
+	width: 100%;
+}
+
+div#welcome {
+	padding: 0.5em;
+	padding-top:0.25em;
+	padding-bottom:0.25em;
+	margin-bottom: 1rem;
+	border: 1px solid var(--dark-color);
+	background-color: var(--light-color);
+}
