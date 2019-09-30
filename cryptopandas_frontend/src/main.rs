@@ -5,8 +5,6 @@ extern crate serde_json;
 #[macro_use]
 extern crate serde;
 
-use actix_web::web;
-use actix_web::{App, HttpResponse, HttpServer};
 use actix_files::Files;
 
 use panda_base::traits::*;
@@ -236,23 +234,23 @@ fn panda_by_token_id(
 
 
 fn main() -> io::Result<()> {
-	let panda_attribute = PandaAttributes {
-		  physique: PhysiqueTrait::SmallFace,
-		  pattern: PatternTrait::Stripes,
-		  eye_color: EyeColorTrait::Thundergrey,
-		  eye_shape: EyeShapeTrait::Caffeine,
-		  base_color: BaseColorTrait::Harbourfog,
-		  highlight_color: HighlightColorTrait::Lemonade,
-		  accent_color: AccentColorTrait::Belleblue,
-		  wild_element: WildElementTrait::ThirdEye,
-		  mouth: MouthTrait::Walrus,
-	};
-
-
-	let r = panda_base::rendering::render_panda(&panda_attribute);
-	if (r.is_ok()) {
-		print!("ok!");
-	}
+// 	let panda_attribute = PandaAttributes {
+// 		  physique: PhysiqueTrait::SmallFace,
+// 		  pattern: PatternTrait::Stripes,
+// 		  eye_color: EyeColorTrait::Thundergrey,
+// 		  eye_shape: EyeShapeTrait::Caffeine,
+// 		  base_color: BaseColorTrait::Harbourfog,
+// 		  highlight_color: HighlightColorTrait::Lemonade,
+// 		  accent_color: AccentColorTrait::Belleblue,
+// 		  wild_element: WildElementTrait::ThirdEye,
+// 		  mouth: MouthTrait::Walrus,
+// 	};
+// 
+// 
+// 	let r = panda_base::rendering::render_panda(&panda_attribute);
+// 	if (r.is_ok()) {
+// 		print!("ok!");
+// 	}
 
     // Init handlebars
     let mut handlebars = Handlebars::new();
@@ -271,11 +269,8 @@ fn main() -> io::Result<()> {
             .register_data(handlebars_ref.clone())
             .data(pool.clone())
             .service(index)
-            .service(user)
-            .service(breeders)
             .service(halloffame)
             .service(mating)
-            .service(panda_by_id)
             .service(
                 web::resource("/panda/{token_id}").route(web::get().to_async(panda_by_token_id)),
             )
