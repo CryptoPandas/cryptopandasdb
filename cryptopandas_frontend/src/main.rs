@@ -135,7 +135,7 @@ fn breeders(
         let data = serde_json::to_value(breeders).map_err(GetByAddressError::Serde)?;
 
         // Render using handle bars
-        Ok(hb
+        Ok(hb_helpers::debug_hb(hb)
             .render("breeders", &data)
             .map_err(|err| GetByAddressError::Handlebars)?)
     })
@@ -180,7 +180,7 @@ fn pandas_by_address(
         let data = serde_json::to_value(attributes).map_err(GetByAddressError::Serde)?;
 
         // Render using handle bars
-        Ok(hb
+        Ok(hb_helpers::debug_hb(hb)
             .render("pandas", &data)
             .map_err(|err| GetByAddressError::Handlebars)?)
     })
@@ -235,7 +235,7 @@ fn selection(
         let data = serde_json::to_value(attributes).map_err(SelectionError::Serde)?;
 
         // Render using handle bars
-        Ok(hb
+        Ok(hb_helpers::debug_hb(hb)
             .render("selection", &data)
             .map_err(|err| SelectionError::Handlebars)?)
     })
@@ -274,7 +274,7 @@ fn panda_by_token_id(
         let data = serde_json::to_value(frontend_panda).map_err(GetByTokenError::Serde)?;
 
         // Render using handle bars
-        Ok(hb
+        Ok(hb_helpers::debug_hb(hb)
             .render("panda", &data)
             .map_err(|err| GetByTokenError::Handlebars)?)
     })

@@ -6,9 +6,10 @@ use std::process::Command;
 use crate::traits::PandaAttributes;
 
 // Should end with a slash
-const DEST_ROOT_PATH : &'static str = "./home/";
+const DEST_ROOT_PATH : &'static str = "./static/pandas/";
+
 const BLENDER_EXEC_LOCATION : &'static str = "/Applications/Blender.app/Contents/MacOS/Blender";
-const SCENE_LOCATION : &'static str = "/Volumes/SP PHP U3-1/Backup WD/Devel/cryptopandas_3d/blender/panda.blend";
+const SCENE_LOCATION : &'static str = "./blender/blender/panda.blend";
 
 fn touch(path: &Path) -> io::Result<()> {
     match OpenOptions::new().create(true).write(true).open(path) {
